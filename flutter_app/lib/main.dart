@@ -2,11 +2,19 @@ import 'package:flutter/material.dart';
 
 import 'pages/HomePage.dart';
 import 'pages/LoginPage.dart';
+import 'pages/DebugPage.dart';
+
+import 'common/DatabaseHandler.dart';
 
 const String HOME = "/";
 const String LOGIN = "/login";
+const String DEBUG = "/debug";
 
-void main() => runApp(MainApp());
+void main() {
+  DatabaseHandler.asyncOpenDatabase();
+
+  runApp(MainApp());
+}
 
 class MainApp extends StatelessWidget {
   @override
@@ -16,10 +24,11 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      initialRoute: HOME,
+      initialRoute: DEBUG,
       routes: {
         HOME: (context) => HomePage(),
-        LOGIN: (context) => LoginPage()
+        LOGIN: (context) => LoginPage(),
+        DEBUG: (context) => DebugPage()
       },
     );
   }
