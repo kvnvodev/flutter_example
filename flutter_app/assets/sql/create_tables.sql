@@ -1,5 +1,5 @@
 -- 1
-CREATE TABLE categories (
+CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT UNIQUE NOT NULL,
     active INTEGER DEFAULT 1,
@@ -12,7 +12,7 @@ CREATE TABLE categories (
 );
 
 -- 2
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     price REAL DEFAULT 0,
@@ -26,14 +26,14 @@ CREATE TABLE products (
 );
 
 -- 3
-CREATE TABLE customers (
+CREATE TABLE IF NOT EXISTS customers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     address TEXT NOT NULL
 );
 
 -- 4
-CREATE TABLE orders (
+CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     customer_id INTEGER,
     FOREIGN KEY (customer_id)
@@ -43,7 +43,7 @@ CREATE TABLE orders (
 );
 
 -- 5
-CREATE TABLE order_details (
+CREATE TABLE IF NOT EXISTS order_details (
     order_id INTEGER,
     product_id INTEGER,
     FOREIGN KEY (order_id)

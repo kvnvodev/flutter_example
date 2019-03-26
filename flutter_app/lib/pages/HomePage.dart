@@ -1,33 +1,31 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
-//import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import '../common/DatabaseHandler.dart';
+
+import '../data/Customer.dart';
 
 class HomePage extends StatefulWidget {
 //  Future<Database> database;
 
-  void openDB() async {
-//    final Future<Database> database =
-//        openDatabase(join(await getDatabasesPath(), "demo.db"), version: 1,
-//            onCreate: (db, version) {
-//      print("db path: ${db.path}");
-      final sql = readFileAssets(path: "assets/sql/create_tables.sql");
-      print(sql);
-      sql.then((content) {
-//        return db.execute(content);
-      });
-//    });
+  void openDB() {
+    DatabaseHandler.doSomething();
+    //  final Future<Database> database =
+    //      openDatabase(join(await getDatabasesPath(), "demo.db"), version: 1,
+    //          onCreate: (db, version) {
+    //    print("db path: ${db.path}");
+    //     final sql = readFileAssets(path: "assets/sql/create_tables.sql");
+    //     print(sql);
+    //     sql.then((content) {
+    //      return db.execute(content);
+    //     });
+    //  });
   }
 
-  Future<String> readFileAssets({String path}) async {
-    final String sql = await rootBundle.loadString(path);
-    print("sql content: $sql");
-    return sql;
-  }
+  // Future<String> readFileAssets({String path}) async {
+  //   final String sql = await rootBundle.loadString(path);
+  //   print("sql content: $sql");
+  //   return sql;
+  // }
 
   @override
   _HomePageState createState() {
@@ -50,8 +48,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _body() {
-    return Container(
-      child: Text("content"),
+    return Center(
+        child: RaisedButton(
+          child: Text("content"),
+    onPressed: () {
+            Customer.justRandom().save();
+    }),
     );
   }
 
