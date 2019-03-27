@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/Customer.dart';
 import '../data/Category.dart';
+import '../data/Product.dart';
 
 class DebugPage extends StatefulWidget {
   @override
@@ -32,6 +33,11 @@ class _DebugPageState extends State<DebugPage> {
               child: Text("Generate category"),
               onPressed: () {
                 Category.justRandom().save();
+              }),
+          RaisedButton(
+              child: Text("Generate product"),
+              onPressed: () {
+                Product.justRandom().save();
               }),
           RaisedButton(
               child: Text("Generate customer"),

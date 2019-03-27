@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../data/Customer.dart';
+import 'package:flutter_app/data/Product.dart';
 
 class HomePage extends StatefulWidget {
-
   @override
   _HomePageState createState() {
     return _HomePageState();
@@ -23,13 +21,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _body() {
-    return Center(
-      child: RaisedButton(
-          child: Text("content"),
-          onPressed: () {
-            Customer.justRandom().save();
-          }),
-    );
+    return StreamBuilder(
+        initialData: [],
+        stream: Stream.fromFuture(Product.getListProducts()),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container();
+          }
+
+          return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (ctx, idx) {
+                final Product product = snapshot.data[idx];
+                return ListTile(title: Text(product.name));
+              });
+        });
   }
 
   @override

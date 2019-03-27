@@ -13,20 +13,37 @@ class DatabaseHandler {
       return;
     }
 
-    _database = openDatabase(join(await getDatabasesPath(), "demo.db"), version: 1,
-        onCreate: (db, version) {
+    _database = openDatabase(join(await getDatabasesPath(), "demo.db"),
+        version: 1, onCreate: (db, version) {
       final Batch batch = db.batch();
 
-      final stream = Stream.fromFutures([
-        _readFileAssets(path: "assets/sql/create_table_categories.sql"),
-        _readFileAssets(path: "assets/sql/create_table_products.sql"),
-        _readFileAssets(path: "assets/sql/create_table_customers.sql"),
-        _readFileAssets(path: "assets/sql/create_table_orders.sql"),
-        _readFileAssets(path: "assets/sql/create_table_order_details.sql")
-      ]);
+//      final stream = Stream.fromFutures([
+//        _readFileAssets(path: "assets/sql/create_table_categories.sql"),
+//        _readFileAssets(path: "assets/sql/create_table_products.sql"),
+//        _readFileAssets(path: "assets/sql/create_table_customers.sql"),
+//        _readFileAssets(path: "assets/sql/create_table_orders.sql"),
+//        _readFileAssets(path: "assets/sql/create_table_order_details.sql")
+//      ]);
+//
+//      stream.forEach((sql) {
+//        batch.execute(sql);
+//      }).whenComplete(() {
+//        batch.commit();
+//      });
 
-      stream.forEach((sql) {
-        batch.execute(sql);
+      final _paths = [
+        "assets/sql/create_table_categories.sql",
+        "assets/sql/create_table_products.sql",
+        "assets/sql/create_table_customers.sql",
+        "assets/sql/create_table_orders.sql",
+        "assets/sql/create_table_order_details.sql"
+      ];
+
+      Future.wait(_paths.map((path) => _readFileAssets(path: path)))
+          .then((list) {
+        list.forEach((sql) {
+          batch.execute(sql);
+        });
       }).whenComplete(() {
         batch.commit();
       });
@@ -40,18 +57,17 @@ class DatabaseHandler {
     db.close();
   }
 
-  static void insert({String sql, OnInsertCallback callback, int times: 0}) async {
-    if (times == 5) {
-      print("RETRY insert times exceed $times");
-      return;
-    }
-
+  static Future<List<Map<String, dynamic>>> query({String sql}) async {
     final Database db = await _database;
     if (db == null || !db.isOpen) {
-      asyncOpenDatabase();
+      return null;
+    }
+    return db.rawQuery(sql);
+  }
 
-      print("RETRY insert ${times + 1} times");
-      insert(sql: sql, callback: callback, times: times + 1);
+  static Future<void> insert({String sql, OnInsertCallback callback}) async {
+    final Database db = await _database;
+    if (db == null || !db.isOpen) {
       return;
     }
 
@@ -64,6 +80,17 @@ class DatabaseHandler {
     });
   }
 
+  static void update({String sql, OnUpdateCallback callback}) async {
+    final Database db = await _database;
+    db.rawUpdate(sql).then((rowid) {
+      if (callback != null) {
+        callback(rowid);
+      }
+    }).whenComplete(() {
+      print("update completed");
+    });
+  }
+
   static Future<String> _readFileAssets({String path}) async {
     final String sql = await rootBundle.loadString(path);
     print("sql content: $sql");
@@ -72,4 +99,4 @@ class DatabaseHandler {
 }
 
 typedef void OnInsertCallback(int);
-typedef void OnUpdateCallback(int);
+typedef OnUpdateCallback = void Function(int);
