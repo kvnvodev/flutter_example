@@ -35,7 +35,7 @@ class Customer {
   }
 
   static Future<List<Map<String, dynamic>>> getListCustomers() async {
-    final sql = "SELECT * FROM categories";
+    final sql = "SELECT * FROM $_TABLE_NAME";
     final results = await DatabaseHandler.query(sql: sql);
     return results;
   }

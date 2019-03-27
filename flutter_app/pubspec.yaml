@@ -27,6 +27,7 @@ dependencies:
   sqflite: any
   path: any
   shared_preferences: any
+  scoped_model: ^1.0.1
 
 dev_dependencies:
   flutter_test:

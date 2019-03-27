@@ -33,11 +33,29 @@ class _DebugPageState extends State<DebugPage> {
               child: Text("Generate category"),
               onPressed: () {
                 Category.justRandom().save();
+                showDialog(
+                  context: context,
+                  builder: (ctx) {
+                    return AlertDialog(
+                      title: Text("Generate category"),
+                      content: Text("Category added!!!"),
+                    );
+                  },
+                );
               }),
           RaisedButton(
               child: Text("Generate product"),
               onPressed: () {
                 Product.justRandom().save();
+                showDialog(
+                  context: context,
+                  builder: (ctx) {
+                    return AlertDialog(
+                      title: Text("Generate product"),
+                      content: Text("Product added!!!"),
+                    );
+                  },
+                );
               }),
           RaisedButton(
               child: Text("Generate customer"),

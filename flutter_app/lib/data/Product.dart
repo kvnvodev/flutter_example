@@ -43,8 +43,12 @@ class Product {
   }
 
   static Future<List<Product>> getListProducts() async {
-    final sql = "SELECT * FROM products";
+    final sql = "SELECT * FROM $_TABLE_NAME";
     final results = await DatabaseHandler.query(sql: sql);
+    if (results == null) {
+      return null;
+    }
+
     return results.map((json) {
       return Product.fromJson(json);
     }).toList();
@@ -53,15 +57,24 @@ class Product {
   void save() {
     if (this.id == 0) {
       _insert();
+    } else {
+      _update();
     }
-//    else {
-//      _update();
-//    }
   }
 
   void _insert() {
     final sql =
         "INSERT INTO $_TABLE_NAME (name, price, quantity, category_id) VALUES ('${this.name}', ${this.price}, ${this.quantity}, ${this.categoryId})";
+    DatabaseHandler.insert(
+        sql: sql,
+        callback: (rowid) {
+          this.id = rowid;
+        });
+  }
+
+  void _update() {
+    final sql =
+        "UPDATE $_TABLE_NAME SET name = '${this.name}', price = ${this.price}, quantity = ${this.quantity}, category_id = ${this.categoryId} WHERE id = ${this.id}";
     DatabaseHandler.insert(
         sql: sql,
         callback: (rowid) {
