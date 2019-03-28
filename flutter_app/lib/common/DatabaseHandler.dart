@@ -31,16 +31,6 @@ class DatabaseHandler {
 //        batch.commit();
 //      });
 
-      _readFileAssets(path: "assets/sql/demo.sql").then((sql) {
-        sql.split(";").forEach((statement) {
-          if (statement.length != 0) { 
-            batch.execute(statement);
-          }
-        });
-
-        batch.commit();
-      });
-
     //   final _paths = [
     //     "assets/sql/create_table_categories.sql",
     //     "assets/sql/create_table_products.sql",
@@ -59,6 +49,16 @@ class DatabaseHandler {
     //   });
 
     //   print("db path: ${db.path}");
+
+      _readFileAssets(path: "assets/sql/demo.sql").then((sql) {
+        sql.split(";").forEach((statement) {
+          if (statement.length != 0) { 
+            batch.execute(statement);
+          }
+        });
+
+        batch.commit();
+      });
     });
   }
 
@@ -105,6 +105,14 @@ class DatabaseHandler {
     final String sql = await rootBundle.loadString(path);
     print("sql content: $sql");
     return sql;
+  }
+
+  static Future<List<Map<String, dynamic>>> queryOrder({String sql: "SELECT o.id, o.status_id, s.name, o.total FROM orders o LEFT JOIN order_status s ON o.status_id = s.id"}) async {
+    final Database db = await _database;
+    if (db == null || !db.isOpen) {
+      return null;
+    }
+    return db.rawQuery(sql);
   }
 }
 

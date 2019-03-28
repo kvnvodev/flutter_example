@@ -10,7 +10,6 @@ class Product {
   int id;
   String name;
   double price;
-  int quantity;
   int categoryId;
 
   Product({this.id: 0, this.name, this.price});
@@ -19,7 +18,6 @@ class Product {
       : this.id = json["id"],
         this.name = json["name"],
         this.price = json["price"],
-        this.quantity = json["quantity"],
         this.categoryId = json["category_id"];
 
   Product.justRandom() {
@@ -28,7 +26,6 @@ class Product {
     this.id = 0;
     this.name = nameWordPair.first + " " + nameWordPair.second;
     this.price = Random().nextInt(100000000).toDouble();
-    this.quantity = Random().nextInt(1000);
     this.categoryId = 1;
   }
 
@@ -37,7 +34,6 @@ class Product {
       "id": this.id,
       "name": this.name,
       "price": this.price,
-      "quantity": this.quantity,
       "category_id": this.categoryId
     };
   }
@@ -64,7 +60,7 @@ class Product {
 
   void _insert() {
     final sql =
-        "INSERT INTO $_TABLE_NAME (name, price, quantity, category_id) VALUES ('${this.name}', ${this.price}, ${this.quantity}, ${this.categoryId})";
+        "INSERT INTO $_TABLE_NAME (name, price, category_id) VALUES ('${this.name}', ${this.price}, ${this.categoryId})";
     DatabaseHandler.insert(
         sql: sql,
         callback: (rowid) {
@@ -74,7 +70,7 @@ class Product {
 
   void _update() {
     final sql =
-        "UPDATE $_TABLE_NAME SET name = '${this.name}', price = ${this.price}, quantity = ${this.quantity}, category_id = ${this.categoryId} WHERE id = ${this.id}";
+        "UPDATE $_TABLE_NAME SET name = '${this.name}', price = ${this.price}, category_id = ${this.categoryId} WHERE id = ${this.id}";
     DatabaseHandler.insert(
         sql: sql,
         callback: (rowid) {
