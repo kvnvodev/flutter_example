@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
-import 'pages/HomePage.dart';
-import 'pages/LoginPage.dart';
-import 'pages/DebugPage.dart';
+import 'package:flutter_app/pages/HomePage.dart';
+import 'package:flutter_app/pages/LoginPage.dart';
+import 'package:flutter_app/pages/DebugPage.dart';
+import 'package:flutter_app/pages/OrderPage.dart';
 
-import 'common/DatabaseHandler.dart';
+import 'package:flutter_app/common/DatabaseHandler.dart';
 
-const String HOME = "/";
+const String HOME = "/home";
 const String LOGIN = "/login";
+const String ORDER = "/";
 const String DEBUG = "/debug";
 
-void main() {
-  DatabaseHandler.asyncOpenDatabase();
+void main() async {
+  await DatabaseHandler.asyncOpenDatabase();
 
   runApp(MainApp());
 }
@@ -24,11 +26,12 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      initialRoute: DEBUG,
+      initialRoute: ORDER,
       routes: {
         HOME: (context) => HomePage(),
         LOGIN: (context) => LoginPage(),
-        DEBUG: (context) => DebugPage()
+        DEBUG: (context) => DebugPage(),
+        ORDER: (context) => OrderPage()
       },
     );
   }

@@ -7,7 +7,7 @@ import 'package:path/path.dart';
 class DatabaseHandler {
   static Future<Database> _database;
 
-  static void asyncOpenDatabase() async {
+  static Future<void> asyncOpenDatabase() async {
     final Database db = await _database;
     if (db != null && db.isOpen) {
       return;
@@ -31,24 +31,34 @@ class DatabaseHandler {
 //        batch.commit();
 //      });
 
-      final _paths = [
-        "assets/sql/create_table_categories.sql",
-        "assets/sql/create_table_products.sql",
-        "assets/sql/create_table_customers.sql",
-        "assets/sql/create_table_orders.sql",
-        "assets/sql/create_table_order_details.sql"
-      ];
-
-      Future.wait(_paths.map((path) => _readFileAssets(path: path)))
-          .then((list) {
-        list.forEach((sql) {
-          batch.execute(sql);
+      _readFileAssets(path: "assets/sql/demo.sql").then((sql) {
+        sql.split(";").forEach((statement) {
+          if (statement.length != 0) { 
+            batch.execute(statement);
+          }
         });
-      }).whenComplete(() {
+
         batch.commit();
       });
 
-      print("db path: ${db.path}");
+    //   final _paths = [
+    //     "assets/sql/create_table_categories.sql",
+    //     "assets/sql/create_table_products.sql",
+    //     "assets/sql/create_table_customers.sql",
+    //     "assets/sql/create_table_orders.sql",
+    //     "assets/sql/create_table_order_details.sql"
+    //   ];
+
+    //   Future.wait(_paths.map((path) => _readFileAssets(path: path)))
+    //       .then((list) {
+    //     list.forEach((sql) {
+    //       batch.execute(sql);
+    //     });
+    //   }).whenComplete(() {
+    //     batch.commit();
+    //   });
+
+    //   print("db path: ${db.path}");
     });
   }
 
