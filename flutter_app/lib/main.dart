@@ -26,7 +26,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      initialRoute: ORDER,
+      initialRoute: DEBUG,
       routes: {
         HOME: (context) => HomePage(),
         LOGIN: (context) => LoginPage(),

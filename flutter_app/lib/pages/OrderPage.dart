@@ -58,21 +58,21 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
-  Future<List<Order>> get _listOrders async {
-    return await Order.getListOrders();
+  Future<List<Order>> get _listOrders {
+    return Order.getListOrders();
   }
 
   // actions
   void _createNewOrder() {
-    setState(() {
-      Order.justRandom().save();
-    });
+    Order.justRandom().save();
+    setState(() {});
   }
 }
 
 class OrderWidget extends StatefulWidget {
   final int orderId;
   final String statusName;
+  int val = 0;
 
   OrderWidget({this.orderId, this.statusName});
 
@@ -81,25 +81,12 @@ class OrderWidget extends StatefulWidget {
 }
 
 class _OrderWidgetState extends State<OrderWidget> {
-  bool isExanded;
-
-  @override
-  void initState() {
-    super.initState();
-    isExanded = false;
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {
-          setState(() {
-            isExanded = !isExanded;
-          });
-        },
+        onTap: () {},
         child: Container(
-            height: 50,
-            // constraints: BoxConstraints.expand(height: isExanded ? 100 : 50),
+            padding: const EdgeInsets.all(20.0),
             decoration: BoxDecoration(
                 border: Border(bottom: BorderSide(color: Colors.yellow))),
             child: _col()));
@@ -109,12 +96,19 @@ class _OrderWidgetState extends State<OrderWidget> {
     final children = List<Widget>();
     children.add(Row(children: [
       Text("Order #${widget.orderId}: "),
-      Text("2 products"),
-      Expanded(flex: 2, child: Text("${widget.statusName}"))
+      Text("${widget.val} product(s)"),
+      Expanded(flex: 2, child: Text("${widget.statusName}")),
+      IconButton(
+          icon: Icon(Icons.add, color: Colors.black),
+          onPressed: () {
+            setState(() {
+              widget.val++;
+            });
+          })
     ]));
 
-    if (isExanded) {
-      children.add(Text("expanded"));
+    for (int i = 0; i < widget.val; ++i) {
+      children.add(Text("product $i"));
     }
 
     return Column(children: children);

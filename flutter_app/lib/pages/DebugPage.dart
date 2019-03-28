@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../data/Customer.dart';
-import '../data/Category.dart';
-import '../data/Product.dart';
-
 class DebugPage extends StatefulWidget {
   @override
   _DebugPageState createState() {
@@ -12,6 +8,8 @@ class DebugPage extends StatefulWidget {
 }
 
 class _DebugPageState extends State<DebugPage> {
+  int val = 0;
+
   @override
   void initState() {
     super.initState();
@@ -29,38 +27,38 @@ class _DebugPageState extends State<DebugPage> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          Text("val: $val"),
           RaisedButton(
-              child: Text("Generate category"),
+              child: Text("decrement"),
               onPressed: () {
-                Category.justRandom().save();
-                showDialog(
-                  context: context,
-                  builder: (ctx) {
-                    return AlertDialog(
-                      title: Text("Generate category"),
-                      content: Text("Category added!!!"),
-                    );
-                  },
-                );
+                setState(() {
+                  val--;
+                });
+                // showDialog(
+                //   context: context,
+                //   builder: (ctx) {
+                //     return AlertDialog(
+                //       title: Text("Generate category"),
+                //       content: Text("Category added!!!"),
+                //     );
+                //   },
+                // );
               }),
           RaisedButton(
-              child: Text("Generate product"),
+              child: Text("increment"),
               onPressed: () {
-                Product.justRandom().save();
-                showDialog(
-                  context: context,
-                  builder: (ctx) {
-                    return AlertDialog(
-                      title: Text("Generate product"),
-                      content: Text("Product added!!!"),
-                    );
-                  },
-                );
-              }),
-          RaisedButton(
-              child: Text("Generate customer"),
-              onPressed: () {
-                Customer.justRandom().save();
+                setState(() {
+                  val++;
+                });
+                // showDialog(
+                //   context: context,
+                //   builder: (ctx) {
+                //     return AlertDialog(
+                //       title: Text("Generate product"),
+                //       content: Text("Product added!!!"),
+                //     );
+                //   },
+                // );
               })
         ],
       ),
