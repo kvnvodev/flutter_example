@@ -55,3 +55,10 @@ CREATE TABLE IF NOT EXISTS order_details (
         ON UPDATE CASCADE
         ON DELETE NO ACTION
 );
+
+
+select d.order_id, p.id as product_id, p.name as product_name, d.price as price, d.quantity
+from order_details d
+left join products p
+on p.id = d.product_id
+where d.order_id = 1;

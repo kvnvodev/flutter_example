@@ -51,7 +51,7 @@ class DatabaseHandler {
     //   print("db path: ${db.path}");
 
       _readFileAssets(path: "assets/sql/demo.sql").then((sql) {
-        sql.split(";").forEach((statement) {
+        sql.split("---").forEach((statement) {
           if (statement.length != 0) { 
             batch.execute(statement);
           }

@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT UNIQUE NOT NULL
 );
-
+---
 CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT UNIQUE NOT NULL,
@@ -10,19 +10,19 @@ CREATE TABLE IF NOT EXISTS products (
     category_id INTEGER,
     FOREIGN KEY (category_id) REFERENCES categories (id)
 );
-
+---
 CREATE TABLE IF NOT EXISTS order_status (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT UNIQUE NOT NULL
 );
-
+---
 CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     status_id INTEGER DEFAULT 1,
     total REAL DEFAULT 0,
     FOREIGN KEY (status_id) REFERENCES order_status (id)
 );
-
+---
 CREATE TABLE IF NOT EXISTS order_details (
     product_id INTEGER,
     order_id INTEGER,
@@ -32,9 +32,9 @@ CREATE TABLE IF NOT EXISTS order_details (
     FOREIGN KEY (product_id) REFERENCES products (id),
     FOREIGN KEY (order_id) REFERENCES orders (id)
 );
-
+---
 INSERT INTO categories (name) VALUES ("Foods & Beverages"), ("Drinks");
-
+---
 INSERT INTO products (name, price, category_id) VALUES 
 ("Expresso", 30000, 2), 
 ("Latte", 34000, 2), 
@@ -44,11 +44,35 @@ INSERT INTO products (name, price, category_id) VALUES
 ("Sandwich", 23000, 1),
 ("Hamburger", 34000, 1),
 ("Mashed potato", 23000, 1);
-
+---
 INSERT INTO order_status (name) VALUES ("New"), ("In Progress"), ("Canceled"), ("Done");
-
+---
 INSERT INTO orders (status_id) VALUES (1), (1), (1), (1);
-
+---
+CREATE TRIGGER trigger_insert_order_details AFTER INSERT
+ON order_details
+BEGIN
+    UPDATE orders
+    SET total = total + new.price * new.quantity
+    WHERE id = new.order_id;
+END;
+---
+CREATE TRIGGER trigger_update_order_details AFTER UPDATE
+ON order_details
+BEGIN
+    UPDATE orders
+    SET total = (SELECT SUM(d.price * d.quantity) FROM order_details d WHERE d.order_id = orders.id)
+    WHERE id = new.order_id;
+END;
+---
+CREATE TRIGGER trigger_delete_order_details AFTER DELETE
+ON order_details
+BEGIN
+    UPDATE orders
+    SET total = (SELECT SUM(d.price * d.quantity) FROM order_details d WHERE d.order_id = orders.id AND d.product_id <> old.product_id)
+    WHERE id = old.order_id;
+END;
+---
 INSERT INTO order_details (product_id, order_id, price, quantity) VALUES
 (1, 1, 30000, 1),
 (2, 1, 34000, 2),
@@ -57,4 +81,5 @@ INSERT INTO order_details (product_id, order_id, price, quantity) VALUES
 (8, 2, 23000, 1),
 (5, 3, 19000, 3),
 (7, 3, 23000, 2),
-(1, 3, 23000, 5);
+(1, 3, 23000, 5),
+(5, 4, 23000, 5);
