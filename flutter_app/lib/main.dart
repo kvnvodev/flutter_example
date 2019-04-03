@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_app/pages/home_page.dart';
@@ -18,6 +20,14 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Flutter Demo App",
+      theme: ThemeData(
+        appBarTheme: AppBarTheme(
+          elevation: defaultTargetPlatform == TargetPlatform.iOS ? 0.0 : 4.0,
+          textTheme: TextTheme(
+
+          )
+        ),
+      ),
       initialRoute: app.routeNameHome,
       routes: {
         app.routeNameHome: (context) => HomePage(),
