@@ -20,20 +20,41 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Flutter Demo App",
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          elevation: defaultTargetPlatform == TargetPlatform.iOS ? 0.0 : 4.0,
-          textTheme: TextTheme(
-
-          )
-        ),
+      theme: _lightTheme(),
+      darkTheme: _darkTheme(),
+      // initialRoute: app.routeNameHome,
+      // routes: {
+      //   app.routeNameHome: (context) => HomePage(),
+      //   app.routeNameOrdersManagement: (context) => OrdersManagementPage(),
+      //   app.routeNameMenu: (context) => MenuPage()
+      // }
+      home: Backdrop(
+        backLayer: Text("back"),
       ),
-      initialRoute: app.routeNameHome,
-      routes: {
-        app.routeNameHome: (context) => HomePage(),
-        app.routeNameOrdersManagement: (context) => OrdersManagementPage(),
-        app.routeNameMenu: (context) => MenuPage()
-      }
     );
+  }
+
+  ThemeData _lightTheme() {
+    return ThemeData.light().copyWith(
+        primaryColor: Colors.lightGreen[400],
+        accentColor: Colors.lightGreenAccent[400],
+        appBarTheme: AppBarTheme(elevation: 0.0, color: Colors.lightGreen[400]),
+        textTheme: TextTheme(
+            subhead: TextStyle(
+                color: Color.fromARGB(255, 32, 32, 32),
+                fontWeight: FontWeight.bold),
+            subtitle: TextStyle(color: Color.fromARGB(255, 80, 80, 80))));
+  }
+
+  ThemeData _darkTheme() {
+    return ThemeData.light().copyWith(
+        // primaryColor: Colors.lightGreen[50],
+        // appBarTheme: AppBarTheme(elevation: 0.0, color: Colors.lightGreen[300]),
+        // textTheme: TextTheme(
+        //     subhead: TextStyle(
+        //         color: Color.fromARGB(255, 32, 32, 32),
+        //         fontWeight: FontWeight.bold),
+        //     subtitle: TextStyle(color: Color.fromARGB(255, 80, 80, 80)))
+        );
   }
 }

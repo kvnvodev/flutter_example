@@ -169,8 +169,8 @@ class _ProductItemState extends State<ProductItem> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text("${widget.product.name}"),
-                  Text("${widget.product.price}"),
+                  Text("${widget.product.name}", style: Theme.of(context).textTheme.subhead),
+                  Text("${widget.product.price}", style: Theme.of(context).textTheme.subtitle),
                   Text("${widget.product.quantity}")
                 ],
               ))
