@@ -11,6 +11,7 @@ class DatabaseManager {
   static final DatabaseManager instance = DatabaseManager();
 
   Database _database;
+  Database get database => _database;
 
   String get _dbFileName => "demo.app";
   String get _sqlFileName => "assets/sql/demo.sql";
@@ -79,58 +80,6 @@ class DatabaseManager {
       print("DOWNGRADE Database, old - new: $oldVersion - $newVersion");
     }
   }
-
-  FutureOr<List<Order>> fetchListOrders() async {
-    final results =
-        await _database.rawQuery(DatabaseConstants.sqlFetchListOrders);
-    if (results == null) {
-      return null;
-    }
-
-    final data = results.reduce((value, element) {
-      final key = element["id"].toString();
-      if (value == null) {
-        return {key : [element]};
-      }
-
-      if (value.containsKey(key)) {
-        final list = List.unmodifiable(value[key]);
-        list.add(element);
-        value[key] = list;
-      }
-      else {
-        value[key] = [element];
-      }
-
-      return value;
-    });
-
-    print("__DEBUG__ data: $data");
-
-    List<Map<String, dynamic>> orders = [];
-
-    results.forEach((mapping) {
-      Map<String, dynamic> lastMapping = {};
-      if (orders.isNotEmpty) {
-        lastMapping = orders.last;
-      }
-
-      if (lastMapping["id"] != mapping["id"]) {
-        Map<String, dynamic> newMapping = mapping;
-        List<Map<String, dynamic>> products = [];
-        products.add(mapping);
-        newMapping["products"] = products;
-      } else {
-        List<Map<String, dynamic>> products = lastMapping["products"];
-        products.add(mapping);
-      }
-    });
-
-    return results.map((json) {
-      print("----- $json");
-      return Order.fromJson(json);
-    }).toList();
-  }
 }
 
 class DatabaseConstants {
@@ -152,45 +101,4 @@ class DatabaseConstants {
   """;
 }
 
-class Order {
-  int id = 0;
-  final int statusId;
-  final String statusName;
-  final double total;
-  List<Product> products = [];
 
-  Order({this.statusId, this.statusName, this.total});
-
-  Order.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        statusId = json["status_id"],
-        statusName = json["status_name"],
-        total = json["total"],
-        products = _products(json);
-
-  static List<Product> _products(Map<String, dynamic> json) => [];
-
-  @override
-  String toString() {
-    return "Order {id: $id, statusId: $statusId, statusName: $statusName, total: $total}";
-  }
-}
-
-class Product {
-  int id;
-  final String name;
-  int quantity;
-  final double price;
-  final String categoryId;
-
-  Product({this.id, this.name, this.quantity, this.price, this.categoryId});
-
-  Product.fromJson(Map<String, dynamic> json)
-      : id = json["product_id"],
-        name = json["product_name"],
-        quantity = json["quantity"],
-        price = json["price"],
-        categoryId = json["category_id"];
-
-  // List<Product>.fromJsonArray(List<Map<String, dynamic>> json) : ;
-}

@@ -55,16 +55,17 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget _body() {
-    return StreamBuilder(
-        initialData: [],
-        stream: Stream.fromFuture(Product.getListProducts()),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container();
-          }
+    return Container();
+    // return StreamBuilder(
+    //     initialData: [],
+    //     stream: Stream.fromFuture(Product.getListProducts()),
+    //     builder: (context, snapshot) {
+    //       if (!snapshot.hasData) {
+    //         return Container();
+    //       }
 
-          return HomePageListBuilder(key: _builderKey, products: snapshot.data);
-        });
+    //       return HomePageListBuilder(key: _builderKey, products: snapshot.data);
+    //     });
   }
 
   Widget _drawer() {

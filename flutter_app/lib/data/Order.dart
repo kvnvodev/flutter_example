@@ -1,76 +1,62 @@
 import 'dart:async';
-import 'dart:math';
 
-import 'package:flutter_app/common/DatabaseHandler.dart';
+import 'package:flutter_app/utils/database_manager.dart';
+import 'product.dart';
 
 class Order {
-  static const String TABLE_ORDERS = "orders";
+  int id = 0;
+  final int statusId;
+  final String statusName;
+  final double total;
+  List<Product> products = [];
 
-  int id;
-  double total;
-  int statusId;
-  String statusName;
-
-  Order({this.id: 0, this.total, this.statusId});
+  Order({this.statusId, this.statusName, this.total});
 
   Order.fromJson(Map<String, dynamic> json)
-      : this.id = json["id"],
-        this.total = json["total"],
-        this.statusId = json["status_id"],
-        this.statusName = json["status_name"];
+      : id = json["id"],
+        statusId = json["status_id"],
+        statusName = json["status_name"],
+        total = json["total"],
+        products = Product.products(json["products"]);
 
-  Order.justRandom() {
-    this.id = 0;
-    this.total = Random().nextInt(100000000).toDouble();
-    this.statusId = 1;
+  @override
+  String toString() {
+    return "Order {id: $id, statusId: $statusId, statusName: $statusName, total: $total, products: $products}";
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      "id": this.id,
-      "total": this.total,
-      "status_id": this.statusId,
-      "status_name": this.statusName
-    };
-  }
-
-  static Future<List<Order>> getListOrders() async {
-    final sql = "SELECT o.id, o.status_id, s.name AS status_name, o.total FROM $TABLE_ORDERS o LEFT JOIN order_status s ON o.status_id = s.id";
-    final results = await DatabaseHandler.query(sql: sql);
+  static FutureOr<List<Order>> fetchListOrders() async {
+    final results =
+        await DatabaseManager.instance.database.rawQuery(DatabaseConstants.sqlFetchListOrders);
     if (results == null) {
       return null;
     }
 
-    return results.map((json) {
-      return Order.fromJson(json);
+    Map<String, dynamic> orders = {};
+    results.forEach((mapping) {
+      final key = mapping["id"].toString();
+      Map<String, dynamic> order = orders[key] ??
+          {
+            "id": mapping["id"],
+            "status_id": mapping["status_id"],
+            "status_name": mapping["status_name"],
+            "total": mapping["total"]
+          };
+      final product = {
+        "product_id": mapping["product_id"],
+        "product_name": mapping["product_name"],
+        "quantity": mapping["quantity"],
+        "price": mapping["price"],
+        "category_id": mapping["category_id"]
+      };
+
+      List<Map<String, dynamic>> products = order["products"] ?? [];
+      products.add(product);
+      order["products"] = products;
+      orders[key] = order;
+    });
+
+    return orders.entries.map((entry) {
+      return Order.fromJson(entry.value);
     }).toList();
-  }
-
-  void save() {
-    if (this.id == 0) {
-      _insert();
-    } else {
-      _update();
-    }
-  }
-
-  void _insert() {
-    final sql =
-        "INSERT INTO $TABLE_ORDERS (total, status_id) VALUES (${this.total}, ${this.statusId})";
-    DatabaseHandler.insert(
-        sql: sql,
-        callback: (rowid) {
-          this.id = rowid;
-        });
-  }
-
-  void _update() {
-    final sql =
-        "UPDATE $TABLE_ORDERS SET total = ${this.total}, status_id = ${this.statusId} WHERE id = ${this.id}";
-    DatabaseHandler.insert(
-        sql: sql,
-        callback: (rowid) {
-          this.id = rowid;
-        });
   }
 }
