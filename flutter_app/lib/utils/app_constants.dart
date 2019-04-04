@@ -1,3 +1,4 @@
+const String routeNameRoot = "/";
 const String routeNameHome = "/";
 const String routeNameOrdersManagement = "/ordersManagement";
 const String routeNameMenu = "/menu";
