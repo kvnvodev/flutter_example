@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
+typedef BackdropToggleController = void Function(bool isOn);
+
 class Backdrop extends StatefulWidget {
   final Widget backLayer;
   final Widget frontLayer;
 
-  const Backdrop({this.backLayer, this.frontLayer});
+  const Backdrop({Key key, this.backLayer, this.frontLayer}) : super(key: key);
 
   @override
-  _BackdropState createState() => _BackdropState();
+  BackdropState createState() => BackdropState();
 }
 
-class _BackdropState extends State<Backdrop> with TickerProviderStateMixin {
+class BackdropState extends State<Backdrop> with TickerProviderStateMixin {
   AnimationController animationController;
 
   @override
@@ -44,6 +46,17 @@ class _BackdropState extends State<Backdrop> with TickerProviderStateMixin {
           }),
       title: Text("Demo App"),
     );
+  }
+
+  void toggle() {
+    if (animationController.status == AnimationStatus.dismissed ||
+        animationController.status == AnimationStatus.forward) {
+      // animationController.forward();
+      animationController.fling(velocity: 3.0);
+    } else {
+      animationController.fling(velocity: -3.0);
+      // animationController.reverse();
+    }
   }
 
   Widget _body() {

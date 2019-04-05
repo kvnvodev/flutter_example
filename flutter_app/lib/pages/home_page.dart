@@ -1,88 +1,139 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_app/utils/app_constants.dart' as app;
+import 'package:flutter_app/common/backdrop.dart';
 
-// class HomePage extends StatefulWidget {
-//   @override
-//   _HomePageState createState() => _HomePageState();
-// }
+class HomePage extends StatelessWidget {
+  final GlobalKey<BackdropState> _backdropKey = GlobalKey();
+  final GlobalKey<MenuState> _menuKey = GlobalKey();
 
-// class _HomePageState extends State<HomePage> {
-//   _appBar() {
-//     return AppBar(
-//       backgroundColor: Colors.amber,
-//       title: Text("Demo App"),
-//     );
-//   }
+  @override
+  Widget build(BuildContext context) {
+    return Backdrop(
+      key: _backdropKey,
+      backLayer: Menu(
+          key: _menuKey,
+          itemSettings: [
+            MenuItemSettings(
+                text: "MENU",
+                type: MenuItemType.menu,
+                routeName: app.routeNameMenu),
+            MenuItemSettings(
+                text: "ORDERS MANAGEMENT",
+                type: MenuItemType.ordersManagement,
+                routeName: app.routeNameOrdersManagement)
+          ],
+          onMenuItemSelected: _onMenuItemSelected),
+    );
+  }
 
-//   Widget _newBody() {
-//     return LayoutBuilder(builder: (context, constraints) {
-//       return Backdrop();
-//     });
-//   }
+  void _onMenuItemSelected(MenuItemSettings settings) {
+    _backdropKey.currentState.toggle();
+    _menuKey.currentState.setState(() {
+      _menuKey.currentState.selectedMenuItemType = settings.type;
+    });
+  }
+}
 
-//   _body() {
-//     return Padding(
-//       padding: const EdgeInsets.all(app.defaultSpacing),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.stretch,
-//         children: <Widget>[
-//         //   Expanded(
-//         //     flex: 1,
-//         //     child: _HomeCard(
-//         //       onTap: () {
-//         //         _navigateTo(routeName: app.routeNameMenu);
-//         //       },
-//         //       child: Center(child: Text("Menu")),
-//         //     ),
-//         //   ),
-//         //   SizedBox(height: app.defaultSpacing),
-//         //   Expanded(
-//         //     flex: 1,
-//         //     child: _HomeCard(
-//         //       onTap: () {
-//         //         _navigateTo(routeName: app.routeNameOrdersManagement);
-//         //       },
-//         //       child: Center(child: Text("Orders Management")),
-//         //     ),
-//         //   ),
-//         // ],
-//       ),
-//     );
-//   }
+typedef OnMenuItemSelected = void Function(MenuItemSettings settings);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: _appBar(),
-//       body: _newBody(),
-//     );
-//   }
+class Menu extends StatefulWidget {
+  final List<MenuItemSettings> itemSettings;
+  final OnMenuItemSelected onMenuItemSelected;
 
-//   void _navigateTo({routeName: String}) {
-//     Navigator.of(context).pushNamed(routeName);
-//   }
-// }
+  Menu({Key key, this.itemSettings, this.onMenuItemSelected}) : super(key: key);
 
-// class _HomeCard extends StatelessWidget {
-//   final Widget child;
-//   final Function onTap;
+  @override
+  MenuState createState() => MenuState();
+}
 
-//   _HomeCard({Key key, this.child, this.onTap}) : super(key: key);
+class MenuState extends State<Menu> {
+  MenuItemType selectedMenuItemType;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//       onTap: onTap,
-//       child: Card(
-//         elevation: app.defaultCardElevation,
-//         borderOnForeground: false,
-//         margin: const EdgeInsets.all(0.0),
-//         shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(app.defaultCardRadius)),
-//         color: Colors.lightGreen[100],
-//         child: child,
-//       ),
-//     );
-//   }
-// }
+  @override
+  void initState() {
+    super.initState();
+    selectedMenuItemType = MenuItemType.menu;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Column(
+            children:
+                List<Widget>.generate(widget.itemSettings.length, (index) {
+      return MenuItem(
+          settings: widget.itemSettings[index],
+          currentSelectedType: selectedMenuItemType,
+          callback: widget.onMenuItemSelected);
+    })));
+  }
+}
+
+class MenuItemSettings {
+  final String text;
+  final MenuItemType type;
+  final String routeName;
+
+  const MenuItemSettings({this.text, this.type, this.routeName});
+}
+
+enum MenuItemType { menu, ordersManagement }
+
+class MenuItem extends StatefulWidget {
+  final MenuItemSettings settings;
+  final OnMenuItemSelected callback;
+  final MenuItemType currentSelectedType;
+
+  MenuItem({Key key, this.settings, this.callback, this.currentSelectedType})
+      : super(key: key);
+
+  @override
+  _MenuItemState createState() => _MenuItemState();
+}
+
+class _MenuItemState extends State<MenuItem> with TickerProviderStateMixin {
+  AnimationController animationController;
+
+  bool get isSelected => widget.settings.type == widget.currentSelectedType;
+
+  @override
+  void initState() {
+    super.initState();
+    animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isSelected) {
+      animationController.forward();
+    } else {
+      animationController.reverse();
+    }
+
+    return GestureDetector(
+      onTap: () {
+        if (widget.callback != null) {
+          widget.callback(widget.settings);
+        }
+      },
+      child: Column(children: [
+        SizedBox(height: 16.0),
+        Text(widget.settings.text),
+        SizedBox(height: 5.0),
+        SizeTransition(
+            axis: Axis.horizontal,
+            sizeFactor: CurvedAnimation(
+                parent: animationController, curve: Curves.easeIn),
+            child: Container(width: 100.0, height: 3.0, color: Colors.white)),
+      ]),
+    );
+  }
+}
