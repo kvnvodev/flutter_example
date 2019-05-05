@@ -8,11 +8,8 @@ class SPHomePage extends StatefulWidget {
 class _SPHomePageState extends State<SPHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Spa"),
-      ),
-      body: Container(),
+    return Container(
+      color: Colors.white,
     );
   }
 }
