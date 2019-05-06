@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>300972288205-cf9929l5p1b8igr9f4gh5f1ovl9p7fce.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.300972288205-cf9929l5p1b8igr9f4gh5f1ovl9p7fce</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAgQ441ZQY0Vw2UOcEyTN1ZA7fA9u-FZ6k</string>
+	<key>GCM_SENDER_ID</key>
+	<string>300972288205</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.planningPoker</string>
+	<key>PROJECT_ID</key>
+	<string>kvnvo-demo-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>kvnvo-demo-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:300972288205:ios:923df6273f817f4a</string>
+	<key>DATABASE_URL</key>
+	<string>https://kvnvo-demo-app.firebaseio.com</string>
+</dict>
+</plist>
